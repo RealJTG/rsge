@@ -19,11 +19,12 @@ def expect_zero_status(func):
         if hasattr(response, 'RESULT'):
             if hasattr(response.RESULT, 'STATUS'):
                 if response.RESULT.STATUS != '0':
-                    raise RsApiError("%s call failed. Expected 0 status, got '%s'" %
-                                     (func.__name__, response.RESULT.STATUS))
+                    raise RsApiError(msg="%s call failed. Expected 0 status." % func.__name__,
+                                     error_code=response.RESULT.STATUS)
             else:
-                raise RsApiError("%s call failed (?) Has 'RESULT' field ('%s'), but no 'STATUS' field" %
-                                 (func.__name__, response.RESULT))
+                raise RsApiError(msg="%s call failed (?) Has 'RESULT' field ('%s'), but no 'STATUS' field"
+                                     % (func.__name__, response.RESULT),
+                                 error_code=None)
         return response
     return with_handler
 
@@ -46,12 +47,13 @@ def expect_int_error_code(error_code):
             try:
                 response = func(*args, **kwargs)
                 if int(response) != error_code:
-                    raise RsApiError("%s call failed. Expected error code %s, got %s" %
-                                     (func.__name__, error_code, int(response)))
+                    raise RsApiError(msg="%s call failed (expected error code %s)" % (func.__name__, error_code),
+                                     error_code=int(response))
                 else:
                     return response
             except ValueError:
-                raise RsApiError("%s call failed. Expected error code %s, got non-integer response '%s'" %
-                                 (func.__name__, error_code, response))
+                raise RsApiError(msg="%s call failed. Expected error code %s, got non-integer response '%s'"
+                                     % (func.__name__, error_code, response),
+                                 error_code=None)
         return with_handler
     return wrapped_decorator
