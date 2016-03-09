@@ -5,7 +5,7 @@ class RsError(Exception):
 class RsApiError(RsError):
     def __init__(self, msg, error_code, *args, **kwargs):
         self.msg = msg
-        self.error_code = error_code
+        self.error_code = int(error_code)
         super(RsError, self).__init__(*args, **kwargs)
 
     def __str__(self):

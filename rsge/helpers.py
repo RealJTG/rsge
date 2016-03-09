@@ -20,11 +20,11 @@ def expect_zero_status(func):
             if hasattr(response.RESULT, 'STATUS'):
                 if response.RESULT.STATUS != '0':
                     raise RsApiError(msg="%s call failed. Expected 0 status." % func.__name__,
-                                     error_code=response.RESULT.STATUS)
+                                     error_code=int(response.RESULT.STATUS))
             else:
-                raise RsApiError(msg="%s call failed (?) Has 'RESULT' field ('%s'), but no 'STATUS' field"
+                raise RsApiError(msg="%s call failed (?) Has 'RESULT' field ('%s'), but no 'STATUS' field (assumed error_code -1)"
                                      % (func.__name__, response.RESULT),
-                                 error_code=None)
+                                 error_code=-1)
         return response
     return with_handler
 
@@ -52,8 +52,8 @@ def expect_int_error_code(error_code):
                 else:
                     return response
             except ValueError:
-                raise RsApiError(msg="%s call failed. Expected error code %s, got non-integer response '%s'"
+                raise RsApiError(msg="%s call failed. Expected error code %s, got non-integer response '%s' (assumed error_code -1)"
                                      % (func.__name__, error_code, response),
-                                 error_code=None)
+                                 error_code=-1)
         return with_handler
     return wrapped_decorator
