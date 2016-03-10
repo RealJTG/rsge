@@ -65,6 +65,10 @@ class RSWaybill:
     def save_waybill(self, waybill_xml):
         return self.client.service.save_waybill(self.service_user, self.service_password, waybill_xml)
 
+    @expect_zero_status
+    def get_waybill(self, waybill_id):
+        return self.client.service.get_waybill(self.service_user, self.service_password, waybill_id)        
+
     @expect_int_error_code(1)
     def send_waybill(self, waybill_id):
         """
